@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database Service
+  db:
+    image: postgres:15-alpine
+    container_name: shabu-buffet-db
+    environment:
+      POSTGRES_DB: shabu_buffet
+      POSTGRES_USER: shabu_admin
+      POSTGRES_PASSWORD: shabu_secret_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U shabu_admin -d shabu_buffet"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Backend API Service
+  api:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: shabu-buffet-api
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=shabu_buffet
+      - DB_USER=shabu_admin
+      - DB_PASSWORD=shabu_secret_password
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+
+volumes:
+  postgres-data:

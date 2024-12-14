@@ -1,0 +1,18 @@
+{
+  "name": "shabu-buffet-api",
+  "version": "1.0.0",
+  "dependencies": {
+    "@elysiajs/swagger": "^0.7.4",
+    "elysia": "^1.1.26",
+    "pg": "^8.13.1",
+    "qrcode": "^1.5.4",
+    "uuid": "^11.0.3",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "bun-types": "latest"
+  },
+  "scripts": {
+    "dev": "bun run --watch src/index.ts"
+  }
+}
